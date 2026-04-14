@@ -1,0 +1,14 @@
+# virtual env
+.venv/
+.venv312/
+
+# python
+__pycache__/
+*.pyc
+
+# data / storage
+data/
+storage/
+
+# environment variables
+.env

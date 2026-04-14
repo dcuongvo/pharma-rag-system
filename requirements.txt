@@ -1,0 +1,61 @@
+# ---------------------------
+# Core RAG Framework (LlamaIndex)
+# ---------------------------
+llama-index
+# llama-index-llms-gemini
+llama-index-llms-google-genai
+llama-index-embeddings-huggingface
+llama-index-retrievers-bm25
+
+# ---------------------------
+# PDF Processing
+# ---------------------------
+pymupdf
+
+# ---------------------------
+# Embeddings / Vector Search
+# ---------------------------
+sentence-transformers
+faiss-cpu
+
+# ---------------------------
+# OCR (for scanned PDFs)
+# ---------------------------
+pytesseract
+Pillow
+
+# ---------------------------
+# Text Cleaning / Normalization
+# ---------------------------
+ftfy
+
+# ---------------------------
+# Data Handling & Analysis
+# ---------------------------
+pandas
+scikit-learn
+
+# ---------------------------
+# Visualization (for evaluation/debugging)
+# ---------------------------
+matplotlib
+
+# ---------------------------
+# Async / Notebook Support
+# ---------------------------
+nest_asyncio
+
+# ---------------------------
+# Config & Environment Management
+# ---------------------------
+pyyaml
+python-dotenv
+
+# Utilities
+requests
+tqdm
+
+# ---------------------------
+# Output / Reporting (optional)
+# ---------------------------
+reportlab
