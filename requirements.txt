@@ -59,3 +59,5 @@ tqdm
 # Output / Reporting (optional)
 # ---------------------------
 reportlab
+
+gradio

@@ -31,7 +31,8 @@ class ChunkDocument:
     chunk_id: str
     document_id: str
     document_name: str
-    page_number: int
+    page_start: int
+    page_end: int
     chunk_index: int
     text: str
     metadata: Dict = field(default_factory=dict)

@@ -29,18 +29,18 @@ class VectorStore:
 
         self.dimension = embeddings.shape[1]
 
-        # 🌍 Global index
+        # Global index
         self.index = faiss.IndexFlatL2(self.dimension)
         self.index.add(embeddings)
 
-        # 🧠 Build per-doc-type indices
+        # Build per-doc-type indices
         self.doc_type_indices = {}
         doc_types = set(chunk.metadata.get("doc_type", "unknown") for chunk in chunks)
 
         for doc_type in doc_types:
             indices = [
                 i for i, chunk in enumerate(chunks)
-                if chunk.metadata.get("doc_type") == doc_type
+                if chunk.metadata.get("doc_type", "unknown") == doc_type
             ]
 
             if not indices:
@@ -103,7 +103,8 @@ class VectorStore:
     def save(self, save_dir: str):
         path = Path(save_dir)
         path.mkdir(parents=True, exist_ok=True)
-
+        if self.index is None:
+            raise ValueError("No index available to save.")
         faiss.write_index(self.index, str(path / "index.faiss"))
 
         with open(path / "chunks.pkl", "wb") as f:
@@ -117,5 +118,31 @@ class VectorStore:
         with open(path / "chunks.pkl", "rb") as f:
             self.chunks = pickle.load(f)
 
-        # rebuild doc_type indices after load
-        self.build_index(self.chunks)
+        self.dimension = self.index.d
+        self._rebuild_doc_type_indices()
+
+    def _rebuild_doc_type_indices(self):
+        if self.index is None or not self.chunks:
+            self.doc_type_indices = {}
+            return
+
+        self.doc_type_indices = {}
+
+        for doc_type in set(chunk.metadata.get("doc_type", "unknown") for chunk in self.chunks):
+            indices = [
+                i for i, chunk in enumerate(self.chunks)
+                if chunk.metadata.get("doc_type", "unknown") == doc_type
+            ]
+
+            if not indices:
+                continue
+
+            vectors = np.vstack([self.index.reconstruct(i) for i in indices]).astype(np.float32)
+
+            type_index = faiss.IndexFlatL2(self.dimension)
+            type_index.add(vectors)
+
+            self.doc_type_indices[doc_type] = {
+                "index": type_index,
+                "mapping": indices,
+            }

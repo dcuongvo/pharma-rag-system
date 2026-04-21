@@ -46,7 +46,8 @@ def chunk_logical_document(
             chunk_id=chunk_id,
             document_id=logical_doc.document_id,
             document_name=logical_doc.document_name,
-            page_number=logical_doc.page_start,
+            page_start=logical_doc.page_start,
+            page_end=logical_doc.page_end,
             chunk_index=idx,
             text=chunk_text_value,
             metadata={

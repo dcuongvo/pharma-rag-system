@@ -1,58 +1,90 @@
+from src.pipelines.indexing_pipeline import IndexingPipeline
 from src.pipelines.retrieval_pipeline import RetrievalPipeline
 
-# Path to your saved FAISS index
-save_dir = "storage/pharma_index"
 
-# Test query
-query = "What is the lot number?"
+PDF_FOLDER = "data/raw_pdfs"
+QUERY = "What is the lot number?"
 
-# Initialize pipeline
-pipeline = RetrievalPipeline()
-pipeline.load_index(save_dir)
 
-# Run full pipeline
-output = pipeline.query(
-    query_text=query,
-    top_k=5,        # final results after reranking
-    retrieve_k=10   # candidates before reranking
-)
+def main():
+    print("\n" + "=" * 60, flush=True)
+    print("STAGE 1: INGESTION", flush=True)
+    print("=" * 60, flush=True)
 
-# =========================
-# PRINT RESULTS
-# =========================
-
-print("\n" + "=" * 60)
-print("FULL RAG PIPELINE TEST")
-print("=" * 60)
-
-print(f"\nQuery: {query}")
-print(f"Predicted doc type: {output['predicted_doc_type']}")
-print(f"Used doc type: {output['used_doc_type']}")
-print(f"Router confidence: {output['confidence']:.2f}")
-
-# -------------------------
-# FINAL ANSWER
-# -------------------------
-print("\n" + "=" * 60)
-print("FINAL ANSWER")
-print("=" * 60)
-print(output["answer"])
-
-# -------------------------
-# SUPPORTING CHUNKS
-# -------------------------
-print("\n" + "=" * 60)
-print("SUPPORTING CHUNKS")
-print("=" * 60)
-
-for chunk, score in output["results"]:
-    print("\n" + "-" * 60)
-    print(f"Rerank score: {score:.4f}")
-    print(f"Chunk ID: {chunk.chunk_id}")
-    print(f"Document: {chunk.document_name}")
-    print(f"Doc type: {chunk.metadata.get('doc_type')}")
-    print(
-        f"Page range: {chunk.metadata.get('page_start')} -> {chunk.metadata.get('page_end')}"
+    indexing_pipeline = IndexingPipeline(
+        chunk_size=300,
+        overlap=50,
     )
-    print(f"Pages: {chunk.metadata.get('pages')}")
-    print(f"Preview: {chunk.text[:250]}")
+
+    index_result = indexing_pipeline.run(PDF_FOLDER)
+
+    print("\n" + "=" * 60, flush=True)
+    print("INDEXING STATS", flush=True)
+    print("=" * 60, flush=True)
+
+    for key, value in index_result["stats"].items():
+        print(f"{key}: {value}", flush=True)
+
+    print("\n" + "=" * 60, flush=True)
+    print("STAGE 2: RETRIEVAL", flush=True)
+    print("=" * 60, flush=True)
+
+    retrieval_pipeline = RetrievalPipeline(
+        vector_store=index_result["vector_store"],
+        rerank_score_threshold=-999.0,
+    )
+
+    output = retrieval_pipeline.query(
+        query_text=QUERY,
+        top_k=5,
+        retrieve_k=10,
+    )
+
+    print("\n" + "=" * 60, flush=True)
+    print("FULL END TO END TEST", flush=True)
+    print("=" * 60, flush=True)
+
+    print(f"\nQuery: {QUERY}", flush=True)
+    print(f"Predicted doc type: {output['predicted_doc_type']}", flush=True)
+    print(f"Used doc type: {output['used_doc_type']}", flush=True)
+    print(f"Router confidence: {output['confidence']:.2f}", flush=True)
+    print(f"Answer confidence: {output.get('answer_confidence', 0.0):.4f}", flush=True)
+
+    print("\n" + "=" * 60, flush=True)
+    print("FINAL ANSWER", flush=True)
+    print("=" * 60, flush=True)
+    print(output["answer"], flush=True)
+
+    print("\n" + "=" * 60, flush=True)
+    print("SOURCES", flush=True)
+    print("=" * 60, flush=True)
+
+    for source in output.get("sources", []):
+        print("\n" + "-" * 60, flush=True)
+        print(f"Source ID: {source.get('source_id')}", flush=True)
+        print(f"Chunk ID: {source.get('chunk_id')}", flush=True)
+        print(f"Doc type: {source.get('doc_type')}", flush=True)
+        print(
+            f"Page range: {source.get('page_start')} -> {source.get('page_end')}",
+            flush=True,
+        )
+        print(f"Score: {source.get('score'):.4f}", flush=True)
+        print(f"Preview: {source.get('preview')}", flush=True)
+
+    print("\n" + "=" * 60, flush=True)
+    print("SUPPORTING CHUNKS", flush=True)
+    print("=" * 60, flush=True)
+
+    for chunk, score in output["results"]:
+        print("\n" + "-" * 60, flush=True)
+        print(f"Rerank score: {score:.4f}", flush=True)
+        print(f"Chunk ID: {chunk.chunk_id}", flush=True)
+        print(f"Document: {chunk.document_name}", flush=True)
+        print(f"Doc type: {chunk.metadata.get('doc_type')}", flush=True)
+        print(f"Page range: {chunk.page_start} -> {chunk.page_end}", flush=True)
+        print(f"Pages: {chunk.metadata.get('pages')}", flush=True)
+        print(f"Preview: {chunk.text[:250]}", flush=True)
+
+
+if __name__ == "__main__":
+    main()
