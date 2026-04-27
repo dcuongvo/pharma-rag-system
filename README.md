@@ -46,7 +46,7 @@ If your Markdown renderer supports HTML video tags:
    ├── good text → [Clean Text]
    └── poor/scan text → [OCR (Tesseract)] → [Clean Text]
    ↓
-[Classify Page Doc Type (LLM-based, not logistic)]
+[Classify Page Doc Type]
    ↓
 [Build Logical Documents]
    ├── clear continuation rules match → [Merge pages]
