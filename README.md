@@ -5,7 +5,7 @@ The system indexes source PDFs, classifies/query-routes by document type, rerank
 
 ## Demo Video
 
-- Primary demo (Loom): [Watch demo on Loom](https://www.loom.com/share/7e9392e6ba2049299db590e544a34cd0)
+- [![Watch Demo](demo/demo.png)](https://www.loom.com/share/7e9392e6ba2049299db590e544a34cd0)
 - Local backup: [`demo/RAG Pipeline for PDF Document QA.mp4`](demo/RAG%20Pipeline%20for%20PDF%20Document%20QA.mp4)
 
 If your Markdown renderer supports HTML video tags:
