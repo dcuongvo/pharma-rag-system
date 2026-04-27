@@ -4,7 +4,8 @@ AI-powered question answering over pharmaceutical PDF documents with source-grou
 
 ## Demo Video
 
-- Video file: [`demo/RAG Pipeline for PDF Document QA.mp4`](demo/RAG%20Pipeline%20for%20PDF%20Document%20QA.mp4)
+- Primary demo (Loom): [Watch demo on Loom](https://www.loom.com/share/7e9392e6ba2049299db590e544a34cd0)
+- Local backup: [`demo/RAG Pipeline for PDF Document QA.mp4`](demo/RAG%20Pipeline%20for%20PDF%20Document%20QA.mp4)
 
 If your Markdown renderer supports HTML video tags:
 

@@ -5,7 +5,8 @@ The system indexes source PDFs, classifies/query-routes by document type, rerank
 
 ## Demo Video
 
-- Video file: [`demo/RAG Pipeline for PDF Document QA.mp4`](demo/RAG%20Pipeline%20for%20PDF%20Document%20QA.mp4)
+- Primary demo (Loom): [Watch demo on Loom](https://www.loom.com/share/7e9392e6ba2049299db590e544a34cd0)
+- Local backup: [`demo/RAG Pipeline for PDF Document QA.mp4`](demo/RAG%20Pipeline%20for%20PDF%20Document%20QA.mp4)
 
 If your Markdown renderer supports HTML video tags:
 
@@ -65,8 +66,8 @@ If your Markdown renderer supports HTML video tags:
 
 - **Word-based chunking with overlap**
 - **Configurable chunk parameters** (`chunk_size`, `overlap`)
-- **Embedding model (default in code):** `BAAI/bge-base-en-v1.5` (SentenceTransformers via `BGEEmbedder`)
-- **Query instruction formatting** for retrieval-oriented embeddings
+- **Embede):** `BAAI/bge-base-en-v1.5` (SentenceTransformers via `BGEEmbedder`)
+- ** codg** for reQuery instruction formattinding model (default intrieval-oriented embeddings
 
 ### Retrieval and reranking
 
