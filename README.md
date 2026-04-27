@@ -35,6 +35,46 @@ If your Markdown renderer supports HTML video tags:
 - PyMuPDF + Tesseract OCR
 - Gemini (via `llama-index-llms-google-genai`)
 
+## Architecture at a glance
+
+```text
+[PDFs (folder + uploaded PDFs)]
+   ↓
+[Extract Text per Page (PyMuPDF)]
+   ↓
+[Check Text Quality / Scan Detection]
+   ├── good text → [Clean Text]
+   └── poor/scan text → [OCR (Tesseract)] → [Clean Text]
+   ↓
+[Classify Page Doc Type (LLM-based, not logistic)]
+   ↓
+[Build Logical Documents]
+   ├── clear continuation rules match → [Merge pages]
+   └── ambiguous → [LLM Continuation Check] → [Merge/split]
+   ↓
+[Chunk Logical Documents]
+   ↓
+[Generate Embeddings (BGE)]
+   ↓
+[Build Vector Stores]
+   ├── [Global FAISS Index]
+   └── [Per-Doc-Type FAISS Indices]
+
+User Query
+   ↓
+[Query Router (LLM doc-type + confidence)]
+   ↓
+[Routing Confidence Check]
+   ├── high confidence → [Targeted Retrieval by Doc Type]
+   └── low confidence  → [Global Retrieval]
+   ↓
+[Reranker (Cross-Encoder)]
+   ↓
+[Rerank Score Check]
+   ├── good → [LLM Answer from Context]
+   └── bad/empty → [No Reliable Answer]
+```
+
 ## Models and Techniques (Full Pipeline)
 
 ### LLM and generation
